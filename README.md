@@ -1,24 +1,29 @@
 # vue-instantsearch-demo
 
 ## Project setup
-```
-yarn install
+
+```sh
+npm i
 ```
 
 ### Compiles and hot-reloads for development
-```
-yarn serve
+
+```sh
+npm run ssr:serve
 ```
 
 ### Compiles and minifies for production
-```
-yarn build
+
+```sh
+npm run ssr:build
 ```
 
 ### Lints and fixes files
-```
-yarn lint
+
+```sh
+npm run lint
 ```
 
 ### Customize configuration
+
 See [Configuration Reference](https://cli.vuejs.org/config/).

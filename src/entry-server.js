@@ -1,21 +1,39 @@
-import { createApp } from "./main";
+import { createApp } from './main'
 
-const prepareUrlForRouting = url => {
-  const { BASE_URL } = process.env;
-  return url.startsWith(BASE_URL.replace(/\/$/, ""))
-    ? url.substr(BASE_URL.length)
-    : url;
-};
+export default context =>
+  // eslint-disable-next-line no-async-promise-executor
+  new Promise(async (resolve, reject) => {
+    const { app, router, instantsearch } = await createApp()
 
-export default context => {
-  return new Promise(async (resolve, reject) => {
-    const { app, router } = await createApp();
-
-    router.push(prepareUrlForRouting(context.url));
+    router.push(context.url)
 
     router.onReady(() => {
-      context.rendered = () => {};
-      resolve(app);
-    }, reject);
-  });
-};
+      const matchedComponents = router.getMatchedComponents()
+
+      if (!matchedComponents.length) {
+        return reject({ code: 404 })
+      }
+
+      Promise.all(
+        matchedComponents.map(Component => {
+          if (Component.asyncData) {
+            return Component.asyncData({
+              instantsearch,
+              route: router.currentRoute,
+            })
+          }
+        }),
+      )
+        .then(() => {
+          // After all preFetch hooks are resolved, our store is now
+          // filled with the state needed to render the app.
+          // When we attach the state to the context, and the `template` option
+          // is used for the renderer, the state will automatically be
+          // serialized and injected into the HTML as `window.__INITIAL_STATE__`.
+          context.algoliaState = instantsearch.getState()
+
+          resolve(app)
+        })
+        .catch(reject)
+    }, reject)
+  })
