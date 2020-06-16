@@ -14,7 +14,7 @@
     "algoliasearch": "4.3.0",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
-    "vue-instantsearch": "2.7.0",
+    "vue-instantsearch": "3.0.3",
     "vue-router": "^3.2.0",
     "vue-server-renderer": "^2.6.0"
   },
